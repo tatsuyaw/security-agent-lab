@@ -38,6 +38,14 @@ resource "aws_s3_object" "wheel" {
   etag   = filemd5("${var.wheels_dir}/${each.value}")
 }
 
+# ハッシュ固定の requirements.txt。EC2 側の pip がこれと一致する wheel だけを受け付ける
+resource "aws_s3_object" "requirements" {
+  bucket = aws_s3_bucket.artifacts.id
+  key    = "wheels/requirements.txt"
+  source = var.requirements_path
+  etag   = filemd5(var.requirements_path)
+}
+
 # ---------------------------------------------------------------- EC2 のロール(SSM 接続 + wheel 読み取りのみ)
 data "aws_iam_policy_document" "ec2_trust" {
   statement {
@@ -136,7 +144,7 @@ resource "aws_instance" "app" {
     }
   }
 
-  depends_on = [aws_s3_object.wheel, aws_iam_role_policy.read_wheels]
+  depends_on = [aws_s3_object.wheel, aws_s3_object.requirements, aws_iam_role_policy.read_wheels]
 
   tags = { Name = "${var.name}-app" }
 }

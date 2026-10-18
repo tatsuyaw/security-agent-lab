@@ -14,12 +14,12 @@ ${app_py}
 PYEOF
 
 # 依存は S3 に置いた wheel からオフラインで入れる(インターネットへの経路がなくても動く)。
-# バージョンは固定(サプライチェーン対策の最低限)
+# requirements.txt は全ライブラリをバージョンと SHA-256 で固定しており、一致しない wheel は pip が拒否する
 mkdir -p /tmp/wheels
 aws s3 cp --recursive "s3://${artifacts_bucket}/wheels/" /tmp/wheels/
 python3 -m venv /opt/vulnapp/venv
 /opt/vulnapp/venv/bin/pip install --no-cache-dir --disable-pip-version-check \
-  --no-index --find-links /tmp/wheels flask==3.1.1 gunicorn==23.0.0
+  --no-index --find-links /tmp/wheels --require-hashes -r /tmp/wheels/requirements.txt
 
 chown -R vulnapp:vulnapp /opt/vulnapp /var/lib/vulnapp
 

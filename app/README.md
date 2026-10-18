@@ -7,7 +7,7 @@ AWS Security Agent 検証用の意図的に脆弱な Flask アプリ。仕込ん
 - ローカルで挙動を見るだけなら次で動く(127.0.0.1:8080 にのみバインド)
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install flask==3.1.1
+python3 -m venv .venv && .venv/bin/pip install --require-hashes -r requirements.txt
 VULNAPP_DB=/tmp/vulnapp.db VULNAPP_FILES=/tmp/vulnapp-files .venv/bin/python app.py
 ```
 

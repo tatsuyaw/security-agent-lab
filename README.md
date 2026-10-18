@@ -39,7 +39,7 @@ cp terraform.tfvars.example terraform.tfvars      # account_id / profile / zone_
 terraform apply                                   # 出力されたネームサーバーをレジストラに NS レコードとして登録
 cd ../network-app && terraform init && cp terraform.tfvars.example terraform.tfvars
 python3 -m pip download -d wheels --only-binary=:all: --python-version 3.9 \
-  --implementation cp --abi cp39 --platform manylinux2014_x86_64 flask==3.1.1 gunicorn==23.0.0
+  --implementation cp --abi cp39 --platform manylinux2014_x86_64 --require-hashes -r ../../../app/requirements.txt
 terraform plan -out=tfplan && terraform apply tfplan
 cd ../security-agent && terraform init && cp terraform.tfvars.example terraform.tfvars
 terraform plan -out=tfplan && terraform apply tfplan

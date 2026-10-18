@@ -29,6 +29,11 @@ variable "wheels_dir" {
   type        = string
 }
 
+variable "requirements_path" {
+  description = "ハッシュ固定の requirements.txt のパス。wheel と一緒に S3 に置き、EC2 は --require-hashes で導入する"
+  type        = string
+}
+
 # ---------------------------------------------------------------- オプション
 variable "instance_type" {
   description = "インスタンスタイプ。無料利用枠対象であることを precondition で確認する"
