@@ -23,7 +23,7 @@ locals {
 
 resource "aws_wafv2_web_acl" "app" {
   name        = "${var.name}-app"
-  description = "Default block; allow only the pentest agent (by header) and optionally the operator"
+  description = "Default block. Allow only the pentest agent by custom header and optionally the operator"
   scope       = "REGIONAL"
 
   # 既定動作は遮断。ヘッダーを持たない第三者は、どのモードでもアプリに届かない
