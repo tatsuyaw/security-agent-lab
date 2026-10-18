@@ -70,9 +70,9 @@ variable "pentest_title" {
 }
 
 variable "create_pentest" {
-  description = "Pentest を Terraform で作るか(Cloud Control 経由の作成がタイムアウトする報告があるため、false で Web アプリ作成に逃げられる)"
+  description = "Pentest を作るか。Pentest はターゲットドメインが VERIFIED でないと作成を拒否されるため、既定 false で 1 回目の apply を行い、ドメイン検証後に true にして 2 回目の apply で作る"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "code_remediation_strategy" {

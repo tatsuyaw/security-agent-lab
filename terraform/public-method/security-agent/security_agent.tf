@@ -56,7 +56,7 @@ resource "awscc_securityagent_pentest" "vulnapp" {
   network_traffic_config = {
     custom_headers = [{
       name  = local.net.custom_header_name
-      value = local.net.custom_header_value
+      value = sensitive(local.net.custom_header_value) # remote_state 経由では sensitive が外れるので明示する
     }]
   }
 

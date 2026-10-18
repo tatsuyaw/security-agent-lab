@@ -1,4 +1,4 @@
 account_id = "123456789012"
 profile    = "<プロファイル名>"
 # create_application = true   # アカウントで初めて Security Agent を使うなら true
-# create_pentest     = true
+create_pentest = false   # 4.4 のドメイン検証が終わったら true にして 2 回目の apply(4.5)で Pentest を作る
