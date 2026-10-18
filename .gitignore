@@ -1,0 +1,26 @@
+# Terraform の作業ファイル(state には実 ID・シークレットが平文で入る)
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+
+# 実アカウント ID・プロファイル名を含むため除外(example だけ追跡する)
+*.tfvars
+!*.tfvars.example
+
+# ローカルの作業メモ・スクリーンショット
+*.png
+*.jpg
+*:Zone.Identifier
+
+# Python
+__pycache__/
+
+# pip download で取得した wheel(手元で再取得できるので追跡しない)
+terraform/public-method/network-app/wheels/
+terraform/private-method/network-app/wheels/
+
+# 閉域方式(private-method)は未検証のため、検証が済むまでリポジトリに含めない
+terraform/private-method/

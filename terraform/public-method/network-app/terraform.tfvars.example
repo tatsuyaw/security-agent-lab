@@ -1,0 +1,4 @@
+account_id = "123456789012"
+profile    = "<プロファイル名>"
+# waf_mode       = "agent-first"      # 1 回目。2 回目は "managed-first"
+# operator_cidrs = ["203.0.113.10/32"] # ブラウザで動作確認したい場合の自分の送信元
