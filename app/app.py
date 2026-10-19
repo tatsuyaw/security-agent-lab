@@ -8,14 +8,9 @@ vulnapp - AWS Security Agent 検証用の「意図的に脆弱な」Web アプ�
 - 方針: サーバーを乗っ取られる種類の脆弱性(リモートコード実行)は仕込まない。
   eval / exec / pickle / subprocess / os.system は使わない。
 
-仕込んだ脆弱性(PLANTED-n のコメントが該当箇所)
-  PLANTED-1  SQL インジェクション            GET  /search?q=
-  PLANTED-2  安全でない直接オブジェクト参照   GET  /profile?id=
-  PLANTED-3  マスアサインメントによる権限昇格 POST /register (role フィールド)
-  PLANTED-4  パストラバーサル                GET  /download?file=
-  PLANTED-5  格納型 XSS                      GET/POST /comment
-  PLANTED-6  認証なしの機密情報露出          GET  /api/config
-  PLANTED-7  推測可能なセッション(未署名 Cookie) POST /login, GET /admin
+仕込んだ脆弱性の一覧と場所は docs/planted-vulnerabilities.md に記載する。
+エージェントがファイル読み取りでこのソースを取得しても答えが分からないよう、
+このファイルには脆弱性の説明コメントを置かない。
 """
 import json
 import logging
@@ -137,8 +132,6 @@ def healthz():
     return "ok\n"
 
 
-# PLANTED-1: SQL インジェクション
-# 検索語を文字列連結で SQL に埋め込んでいる。' UNION SELECT ... で users 表が読める。
 @app.get("/search")
 def search():
     q = request.args.get("q", "")
@@ -152,8 +145,6 @@ def search():
     return page(f"<h2>検索結果</h2><ul>{items}</ul>")
 
 
-# PLANTED-7: 推測可能なセッション
-# ログイン成功時に「uid=<数字>」を署名なしの Cookie に入れる。uid=1 に書き換えれば admin になれる。
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -180,8 +171,6 @@ def current_user():
     return get_db().execute("SELECT * FROM users WHERE id = ?", (int(uid),)).fetchone()
 
 
-# PLANTED-2: IDOR
-# ログイン有無も、本人かどうかも確認せずに id で任意のプロフィールを返す。
 @app.get("/profile")
 def profile():
     pid = request.args.get("id", "")
@@ -196,8 +185,6 @@ def profile():
     )
 
 
-# PLANTED-3: マスアサインメント
-# フォームに role=admin を足すと管理者として登録できる。
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
@@ -219,7 +206,6 @@ def register():
     return page(f"<p>登録しました (role={role})</p>")
 
 
-# PLANTED-7 の到達点: admin ロールなら全ユーザーの平文パスワードが見える
 @app.get("/admin")
 def admin():
     me = current_user()
@@ -230,9 +216,6 @@ def admin():
     return page(f"<h2>ユーザー一覧(管理者)</h2><ul>{body}</ul>")
 
 
-# PLANTED-4: パストラバーサル
-# ファイル名を検証せずに結合している。../../etc/passwd のような指定で任意の読める
-# ファイルが取得できる(プロセスは一般ユーザー権限で動かすので /etc/shadow は読めない)。
 @app.get("/download")
 def download():
     name = request.args.get("file", "")
@@ -245,8 +228,6 @@ def download():
     return Response(data, mimetype="application/octet-stream")
 
 
-# PLANTED-5: 格納型 XSS
-# 投稿本文をエスケープせずに表示する。
 @app.route("/comment", methods=["GET", "POST"])
 def comment():
     if request.method == "POST":
@@ -259,8 +240,6 @@ def comment():
       <input name="body" placeholder="comment"><button>post</button></form><ul>{items}</ul>""")
 
 
-# PLANTED-6: 認証なしの機密情報露出
-# 値はすべてダミー。本物の鍵やトークンは置かない。
 @app.get("/api/config")
 def api_config():
     return {

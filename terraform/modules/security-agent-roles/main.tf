@@ -27,6 +27,32 @@ resource "aws_iam_role_policy_attachment" "app_webapp_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSSecurityAgentWebAppPolicy"
 }
 
+# 管理ポリシー AWSSecurityAgentWebAppPolicy には logs の権限が無く、Web アプリの「ログ」タブで
+# タスクログを開くと logs:GetLogEvents が拒否される(実測)。ペンテスト用ロググループに限って読み取りを許可する
+data "aws_iam_policy_document" "app_logs_read" {
+  statement {
+    sid    = "ReadPentestLogs"
+    effect = "Allow"
+    actions = [
+      "logs:DescribeLogStreams",
+      "logs:GetLogEvents",
+      "logs:FilterLogEvents",
+    ]
+    resources = [
+      "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/securityagent/*",
+      "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/securityagent/*:log-stream:*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "app_logs_read" {
+  count = var.create_app_role ? 1 : 0
+
+  name   = "securityagent-webapp-logs-read"
+  role   = aws_iam_role.app[0].id
+  policy = data.aws_iam_policy_document.app_logs_read.json
+}
+
 # ---------------------------------------------------------------- Pentest サービスロール
 # 実行中の Security Agent が、利用者のアカウントの中で ENI 作成やログ出力を行うためのロール
 data "aws_iam_policy_document" "service_trust" {
