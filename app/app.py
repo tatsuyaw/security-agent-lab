@@ -4,7 +4,8 @@ vulnapp - AWS Security Agent 検証用の「意図的に脆弱な」Web アプ�
 
 - 目的: AWS Security Agent (AWS Continuum) のペネトレーションテストが、
   仕込んだ脆弱性をどこまで検出・実証するかを確かめる。
-- 前提: Private VPC 方式でのみ動かす。インターネットに公開しない。
+- 前提: インターネットにそのまま公開しない。公開方式で試すときは、
+  WAF で検証用の通信だけを通し、検証が終わったら削除する。
 - 方針: サーバーを乗っ取られる種類の脆弱性(リモートコード実行)は仕込まない。
   eval / exec / pickle / subprocess / os.system は使わない。
 
