@@ -11,7 +11,7 @@ AWS Security Agent(AWS Continuum)の **Private VPC 方式ペネトレーショ�
 ## 構成
 
 ```
-app/                               意図的に脆弱な Flask アプリ(仕込みは app.py 冒頭に一覧)
+app/                               意図的に脆弱な Flask アプリ(仕込みの一覧は docs/planted-vulnerabilities.md)
 terraform/modules/
   vulnapp/                         対象アプリの EC2 一式(wheel 用 S3、IAM ロール、インスタンス、user_data)
   vpc-endpoints/                   S3 ゲートウェイ + SSM インターフェースエンドポイント(NAT なしで構築・接続する)
