@@ -18,7 +18,7 @@ terraform/modules/
   vpc-endpoints/                   S3 ゲートウェイ + SSM インターフェースエンドポイント(NAT なしで構築・接続する)
   subnet-flow-logs/                サブネットの VPC フローログ
   security-agent-roles/            Application ロールと Pentest サービスロール
-terraform/public-method/                  公開方式(本命): ALB + ACM + WAF の背後に対象アプリ
+terraform/public-method/                  公開方式: ALB + ACM + WAF の背後に対象アプリ
   dns-zone/                        保有ドメインから委任するサブドメインのホストゾーン(state 1)
   network-app/                     VPC、エンドポイント、EC2、ALB、証明書、WAF(state 2)
   security-agent/                  Application、Agent Space、Target Domain(DNS_TXT)、Pentest(state 3)
