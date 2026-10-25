@@ -22,15 +22,12 @@ terraform/public-method/                  公開方式(本命): ALB + ACM + WAF 
   dns-zone/                        保有ドメインから委任するサブドメインのホストゾーン(state 1)
   network-app/                     VPC、エンドポイント、EC2、ALB、証明書、WAF(state 2)
   security-agent/                  Application、Agent Space、Target Domain(DNS_TXT)、Pentest(state 3)
-terraform/private-method/          Private VPC 方式: 閉域構成(未検証のため、検証が済むまでリポジトリには含めない)
-  network-app/                     VPC、エンドポイント、EC2、プライベートホストゾーン(state 1)
-  security-agent/                  Agent Space、Target Domain(PRIVATE_VPC)、Pentest(state 2)
 docs/                              補助資料
 ```
 
-- Security Agent の Application はアカウントに 1 つだけ。先に apply する側で `create_application = true`、もう一方は `false` にする
+- Security Agent の Application(Web アプリ)と Application ロールはアカウントに 1 つだけ。すでに Security Agent を使っているアカウントでは `create_application = false` にして、この Terraform では作らない
 - 公開版の WAF は既定動作が遮断で、Pentest に付けるカスタムヘッダーを持つリクエストだけ通す。`waf_mode` でヘッダー許可ルールとマネージドルール群の評価順を入れ替える(`agent-first` → `managed-first`)
-- どちらの版も EC2 にインターネットへの経路はない。構築に必要な通信は VPC エンドポイント経由
+- EC2 にインターネットへの経路はない。構築に必要な通信は VPC エンドポイント経由
 
 ## 使い方(公開版。詳細は手順書)
 
