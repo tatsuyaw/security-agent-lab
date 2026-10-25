@@ -4,6 +4,7 @@
 *.tfstate.*
 *.tfplan
 tfplan
+tfplan-destroy
 crash.log
 
 # 実アカウント ID・プロファイル名を含むため除外(example だけ追跡する)

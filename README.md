@@ -1,12 +1,13 @@
 # security-agent-lab
 
-AWS Security Agent(AWS Continuum)の **Private VPC 方式ペネトレーションテスト**を、
-意図的に脆弱な自作 Web アプリに対して実行し、仕組みと検出能力を確かめるための検証環境。
+AWS Security Agent(AWS Continuum)のペネトレーションテストを、意図的に脆弱な自作 Web アプリに対して
+**公開方式(インターネット公開 + ALB + AWS WAF)** で実行し、仕組みと検出能力を確かめるための検証環境。
 
-- 検証手順書(infra.jp 記事ドラフト)が正本。このリポジトリはそのコードを置く場所
-- 初回は NAT Gateway なし(インターネットへの経路がない VPC)で動かす。EC2 の構築は S3 ゲートウェイエンドポイント、SSM 接続はインターフェースエンドポイントで賄う
-- `enable_nat = true` で NAT Gateway を追加できる。Security Agent が GitHub のソースコードを参照する手順で必要になるかを検証で確かめる
-- 対象アプリは VPC 内からしか到達できない
+- 検証の記事(仕組みと設計、手順、結果)が正本で、このリポジトリはそのコードを置く場所: https://www.infra.jp/docs/aws/vulnerability-assessment/security-agent/
+- WAF の既定動作を遮断にし、Security Agent のカスタムヘッダーを持つリクエストだけを通す。第三者は対象アプリに届かない
+- EC2 にインターネットへの経路はない(NAT なし)。構築に必要な通信は S3 ゲートウェイエンドポイントと SSM のインターフェースエンドポイントで賄う
+
+> **注意**: `app/` は脆弱性を意図的に仕込んだアプリである。この Terraform の構成(WAF の既定動作が遮断)以外で、インターネットに公開しないこと。
 
 ## 構成
 
